@@ -2,13 +2,13 @@
   "last_update": "2026-04-03",
   "channels_list": [
     {
-      "name": "Al Jazeera",
+      "name": "Al Jazeera News",
       "url": "https://live-hls-web-ajm.getaj.net/AJM/index.m3u8",
       "category": "News",
       "status": "online"
     },
     {
-      "name": "Live Test 2",
+      "name": "Live Test Channel",
       "url": "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8",
       "category": "Test",
       "status": "online"
