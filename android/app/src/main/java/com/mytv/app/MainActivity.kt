@@ -130,8 +130,8 @@ class MainActivity : AppCompatActivity() {
     // ------------------------------------------------------------------ data
 
     private fun activeSources(): List<Source> =
-        prefs.sources.filter { !it.adult || prefs.adultEnabled } +
-            if (prefs.adultEnabled) listOf(Source.ADULT) else emptyList()
+        // +18 sources are the user's own; they load only while the section is enabled.
+        prefs.sources.filter { !it.adult || prefs.adultEnabled }
 
     /** Restarts if something is already running, so a new request (e.g. enabling +18) is never dropped. */
     private fun refresh(onDone: (() -> Unit)? = null) {
@@ -159,10 +159,22 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /** Called after the adult section is enabled or unlocked: jump to it, or explain why it's empty. */
+    /** Called after the adult section is enabled or unlocked: jump to it, or ask for a source. */
     private fun showAdultResult() {
         val count = all.count { it.adult }
-        if (count > 0) {
+        val hasSources = prefs.sources.any { it.adult }
+        if (!hasSources) {
+            AlertDialog.Builder(this)
+                .setTitle(R.string.adult)
+                .setMessage(
+                    "القسم مفعّل ومحمي بالرقم السري، لكن لا توجد فيه مصادر بعد.\n\n" +
+                        "لا يوجد مصدر مجاني عام موثوق لقنوات الكبار: مشروع iptv-org توقف عن نشرها منذ 2024. " +
+                        "أضف رابط قائمة M3U تملكه (مثلاً من اشتراك IPTV)، وسيبقى مخفياً خلف الرقم السري."
+                )
+                .setPositiveButton("إضافة مصدر للكبار") { _, _ -> addSource(adult = true) }
+                .setNegativeButton("لاحقاً", null)
+                .show()
+        } else if (count > 0) {
             selected = Groups.ADULT
             render()
             toast("قسم الكبار: $count قناة")
@@ -170,9 +182,8 @@ class MainActivity : AppCompatActivity() {
             AlertDialog.Builder(this)
                 .setTitle(R.string.adult)
                 .setMessage(
-                    "تم تفعيل القسم، لكن لم يتم العثور على قنوات للكبار.\n\n" +
-                        "قد يكون المصدر الافتراضي غير متاح حالياً أو محجوباً في بلدك. " +
-                        "يمكنك إضافة رابط قائمة M3U للكبار بنفسك، وسيبقى محمياً بالرقم السري."
+                    "لم يتم تحميل أي قناة من مصادر الكبار التي أضفتها.\n\n" +
+                        "تأكد من صحة الرابط (من «المصادر»)، أو أن الاشتراك ما زال فعّالاً."
                 )
                 .setPositiveButton("إضافة مصدر للكبار") { _, _ -> addSource(adult = true) }
                 .setNeutralButton("إعادة المحاولة") { _, _ -> refresh(::showAdultResult) }
@@ -353,14 +364,14 @@ class MainActivity : AppCompatActivity() {
                 prefs.setPin(pin)
                 prefs.adultEnabled = true
                 Prefs.adultUnlocked = true
-                toast("تم تفعيل قسم الكبار، جارٍ تحميل القنوات…")
-                refresh(::showAdultResult)
+                toast("تم تفعيل قسم الكبار")
+                showAdultResult()
             }
             !Prefs.adultUnlocked -> askPin("أدخل الرقم السري") { pin ->
                 if (prefs.checkPin(pin)) {
                     Prefs.adultUnlocked = true
-                    if (!prefs.adultEnabled || all.none { it.adult }) {
-                        prefs.adultEnabled = true
+                    prefs.adultEnabled = true
+                    if (prefs.sources.any { it.adult } && all.none { it.adult }) {
                         toast("جارٍ تحميل قنوات الكبار…")
                         refresh(::showAdultResult)
                     } else {

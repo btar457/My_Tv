@@ -1,5 +1,5 @@
 {
-  "_comment": "External M3U lists merged into channels.json on each scheduled run. 'categories' filters by the source's group-title (iptv-org category names); each matching category maps to the Arabic group shown in the player. 'playlist': 'adult' routes channels to playlist_adult.m3u instead of playlist.m3u.",
+  "_comment": "External M3U lists merged into channels.json on each scheduled run. 'categories' filters by the source's group-title (iptv-org category names); each matching category maps to the Arabic group shown in the player. 'playlist': 'adult' routes channels to playlist_adult.m3u instead of playlist.m3u. iptv-org stopped publishing adult channels in January 2024, so there is no adult source here.",
   "sources": [
     {
       "id": "iptv-org/ara",
@@ -15,14 +15,6 @@
         "Lifestyle": "ترفيه عام",
         "Culture": "ثقافة ووثائقي",
         "Documentary": "ثقافة ووثائقي"
-      }
-    },
-    {
-      "id": "iptv-org/xxx",
-      "url": "https://iptv-org.github.io/iptv/categories/xxx.m3u",
-      "playlist": "adult",
-      "categories": {
-        "*": "للكبار +18"
       }
     }
   ]

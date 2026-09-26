@@ -47,16 +47,5 @@ data class Source(
             ),
         )
 
-        /** Only fetched once the adult section is enabled with a PIN. */
-        val ADULT = Source(
-            name = "قنوات الكبار (iptv-org)",
-            url = "https://iptv-org.github.io/iptv/categories/xxx.m3u",
-            adult = true,
-            mirrors = listOf(
-                "https://iptv-org.github.io/iptv/index.nsfw.m3u",
-                "https://raw.githubusercontent.com/iptv-org/iptv/gh-pages/categories/xxx.m3u",
-            ),
-            requireGroup = "XXX",
-        )
     }
 }
