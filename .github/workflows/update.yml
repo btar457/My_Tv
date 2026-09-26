@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ["channels.json", "scripts/**"]
+    paths: ["channels.json", "sources.json", "scripts/**"]
 
 permissions:
   contents: write
@@ -25,24 +25,24 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Clean, check streams, rebuild playlist
+      - name: Import, clean, check streams, rebuild playlists
         run: |
           if [ "${{ github.event_name }}" = "push" ]; then
             # A manual edit: only clean and rebuild, don't count failures twice a day.
             python3 scripts/update_playlist.py --logos
           else
-            python3 scripts/update_playlist.py --check --logos
+            python3 scripts/update_playlist.py --import --check --logos
           fi
 
       - name: Commit changes
         run: |
-          if git diff --quiet; then
+          if [ -z "$(git status --porcelain)" ]; then
             echo "No changes."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add channels.json playlist.m3u
+          git add channels.json playlist*.m3u
           git commit -m "Auto-update playlist ($(date -u +%F))"
           for i in 1 2 3; do
             git pull --rebase origin "${GITHUB_REF_NAME}" && git push && exit 0
