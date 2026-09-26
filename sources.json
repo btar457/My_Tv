@@ -1,21 +1,70 @@
 {
-  "_comment": "External M3U lists merged into channels.json on each scheduled run. 'categories' filters by the source's group-title (iptv-org category names); each matching category maps to the Arabic group shown in the player. 'playlist': 'adult' routes channels to playlist_adult.m3u instead of playlist.m3u. iptv-org stopped publishing adult channels in January 2024, so there is no adult source here.",
+  "_comment": "Public M3U lists merged into channels.json on every scheduled run (daily). 'categories' maps the source's group-title to the Arabic group shown in the player; entries whose group-title is not listed are skipped. '*' takes everything. The special group '@sports' sorts a channel into the sports sub-groups by its name. iptv-org stopped publishing adult channels in January 2024, so there is no adult source here.",
   "sources": [
     {
       "id": "iptv-org/ara",
       "url": "https://iptv-org.github.io/iptv/languages/ara.m3u",
-      "playlist": "main",
       "categories": {
         "Entertainment": "ترفيه عام",
+        "Family": "ترفيه عام",
+        "Lifestyle": "ترفيه عام",
+        "Cooking": "ترفيه عام",
+        "Travel": "ترفيه عام",
         "Comedy": "كوميديا",
         "Movies": "أفلام",
         "Series": "مسلسلات",
         "Music": "موسيقى",
-        "Family": "ترفيه عام",
-        "Lifestyle": "ترفيه عام",
+        "Kids": "أطفال",
+        "Animation": "أطفال",
+        "News": "أخبار",
+        "Business": "أخبار",
         "Culture": "ثقافة ووثائقي",
-        "Documentary": "ثقافة ووثائقي"
+        "Documentary": "ثقافة ووثائقي",
+        "Education": "ثقافة ووثائقي",
+        "Religious": "ديني",
+        "General": "قنوات عربية عامة",
+        "Sports": "@sports"
       }
+    },
+    {
+      "id": "free-tv/arab",
+      "url": "https://raw.githubusercontent.com/Free-TV/IPTV/master/playlist.m3u8",
+      "categories": {
+        "Egypt": "قنوات عربية عامة",
+        "Saudi Arabia": "قنوات عربية عامة",
+        "United Arab Emirates": "قنوات عربية عامة",
+        "Qatar": "قنوات عربية عامة",
+        "Kuwait": "قنوات عربية عامة",
+        "Bahrain": "قنوات عربية عامة",
+        "Oman": "قنوات عربية عامة",
+        "Iraq": "قنوات عربية عامة",
+        "Jordan": "قنوات عربية عامة",
+        "Lebanon": "قنوات عربية عامة",
+        "Syria": "قنوات عربية عامة",
+        "Palestine": "قنوات عربية عامة",
+        "Yemen": "قنوات عربية عامة",
+        "Libya": "قنوات عربية عامة",
+        "Tunisia": "قنوات عربية عامة",
+        "Algeria": "قنوات عربية عامة",
+        "Morocco": "قنوات عربية عامة",
+        "Sudan": "قنوات عربية عامة",
+        "News (AR)": "أخبار"
+      }
+    },
+    {
+      "id": "iptv-org/sports",
+      "url": "https://iptv-org.github.io/iptv/categories/sports.m3u",
+      "categories": { "*": "@sports" }
+    },
+    {
+      "id": "iptv-org/movies",
+      "url": "https://iptv-org.github.io/iptv/categories/movies.m3u",
+      "categories": { "*": "أفلام عالمية" }
+    },
+    {
+      "id": "iptv-org/series",
+      "url": "https://iptv-org.github.io/iptv/categories/series.m3u",
+      "categories": { "*": "مسلسلات عالمية" }
     }
   ]
 }

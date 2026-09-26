@@ -5,8 +5,7 @@ on:
     - cron: "17 3 * * *"   # daily, 03:17 UTC (06:17 Baghdad / Riyadh)
   workflow_dispatch:
   push:
-    branches: [main]
-    paths: ["channels.json", "sources.json", "scripts/**"]
+    paths: ["sources.json", "scripts/**", ".github/workflows/update.yml"]
 
 permissions:
   contents: write
@@ -18,6 +17,7 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
 
@@ -26,13 +26,7 @@ jobs:
           python-version: "3.12"
 
       - name: Import, clean, check streams, rebuild playlists
-        run: |
-          if [ "${{ github.event_name }}" = "push" ]; then
-            # A manual edit: only clean and rebuild, don't count failures twice a day.
-            python3 scripts/update_playlist.py --logos
-          else
-            python3 scripts/update_playlist.py --import --check --logos
-          fi
+        run: python3 scripts/update_playlist.py --import --check --logos
 
       - name: Commit changes
         run: |

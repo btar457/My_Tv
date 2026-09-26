@@ -39,7 +39,7 @@ SOURCES_FILE = ROOT / "sources.json"
 
 USER_AGENT = "VLC/3.0.20 LibVLC/3.0.20"
 TIMEOUT = 12
-WORKERS = 32
+WORKERS = 64
 
 # A channel is hidden from playlist.m3u after this many consecutive failed checks.
 HIDE_AFTER = 3
@@ -83,8 +83,13 @@ GROUPS: list[tuple[str, list[str]]] = [
     ("بوكر وألعاب", ["poker", "game", "billiard", "bowling"]),
 ]
 DEFAULT_GROUP = "رياضات متنوعة"
-GROUP_ORDER = [g for g, _ in GROUPS] + [DEFAULT_GROUP]
-# Imported groups (from sources.json) sort after the sports groups, in first-seen order.
+GROUP_ORDER = [g for g, _ in GROUPS] + [DEFAULT_GROUP] + [
+    "قنوات عربية عامة", "ترفيه عام", "أفلام", "مسلسلات", "كوميديا", "موسيقى", "أطفال",
+    "أخبار", "ثقافة ووثائقي", "ديني", "أفلام عالمية", "مسلسلات عالمية",
+]
+# Any other imported group sorts after these, in first-seen order.
+# In sources.json, this group name means "sort into the sports sub-groups by name".
+SPORTS_MARKER = "@sports"
 
 TAG_RE = re.compile(r"\[(geo-blocked|not 24/7)\]", re.IGNORECASE)
 QUALITY_RE = re.compile(r"\(\d{3,4}[pi]\)")
@@ -202,6 +207,8 @@ def import_sources(channels: list[dict], removed: set[str]) -> int:
             group = pick_group(e["attrs"].get("group-title", ""), src.get("categories", {}))
             if not group or url in known:
                 continue
+            if group == SPORTS_MARKER:
+                group = classify(e["name"])
             ch = {"name": e["name"], "url": url, "group": group, "source": src["id"]}
             if src.get("playlist", "main") != "main":
                 ch["playlist"] = src["playlist"]
@@ -396,6 +403,8 @@ def main(argv: list[str] | None = None) -> int:
     for ch in channels:
         # Imported channels keep the group their source assigned.
         if not ch.get("source"):
+            ch["group"] = classify(ch["name"])
+        elif ch.get("group") == SPORTS_MARKER:
             ch["group"] = classify(ch["name"])
 
     if args.do_import:
