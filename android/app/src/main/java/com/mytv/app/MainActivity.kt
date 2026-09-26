@@ -132,7 +132,10 @@ class MainActivity : AppCompatActivity() {
         prefs.sources + if (prefs.adultEnabled) listOf(Source.ADULT) else emptyList()
 
     private fun refresh() {
-        if (busy?.isActive == true) return
+        if (busy?.isActive == true) {
+            swipe.isRefreshing = false
+            return
+        }
         busy = lifecycleScope.launch {
             setBusy(true, "جارٍ تحميل القوائم…")
             val result = repo.refresh(activeSources())
@@ -239,7 +242,8 @@ class MainActivity : AppCompatActivity() {
         chips.setOnCheckedStateChangeListener { group, ids ->
             val chip = ids.firstOrNull()?.let { group.findViewById<Chip>(it) } ?: return@setOnCheckedStateChangeListener
             selected = chip.tag as String
-            render()
+            // Rebuild after the ChipGroup finishes dispatching this change.
+            group.post { render() }
         }
     }
 
