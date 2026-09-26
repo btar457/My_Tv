@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">My TV</string>
+    <string name="search">بحث عن قناة</string>
+    <string name="refresh">تحديث القوائم</string>
+    <string name="check">فحص القنوات</string>
+    <string name="hide_dead">إخفاء القنوات المعطلة</string>
+    <string name="sources">المصادر</string>
+    <string name="adult">قسم الكبار +18</string>
+    <string name="chip_all">الكل</string>
+    <string name="chip_favorites">⭐ المفضلة</string>
+    <string name="chip_recent">🕘 الأخيرة</string>
+    <string name="empty">لا توجد قنوات. اسحب للأسفل أو اضغط «تحديث القوائم».</string>
+    <string name="favorite">مفضلة</string>
+</resources>

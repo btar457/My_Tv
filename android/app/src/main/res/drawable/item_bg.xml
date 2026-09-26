@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Visible focus highlight for TV remotes. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_focused="true">
+        <shape><solid android:color="#332EC4B6" /><stroke android:width="2dp" android:color="@color/accent" /><corners android:radius="8dp" /></shape>
+    </item>
+    <item android:state_pressed="true">
+        <shape><solid android:color="#222EC4B6" /><corners android:radius="8dp" /></shape>
+    </item>
+    <item>
+        <shape><solid android:color="@color/surface" /><corners android:radius="8dp" /></shape>
+    </item>
+</selector>
