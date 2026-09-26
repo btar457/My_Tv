@@ -35,7 +35,7 @@ class Repository(private val context: Context) {
     suspend fun refresh(sources: List<Source>): RefreshResult = coroutineScope {
         val results = sources.map { src ->
             async(Dispatchers.IO) {
-                runCatching { src to M3uParser.parse(download(src.url)) }
+                runCatching { src to M3uParser.parse(downloadAny(listOf(src.url) + src.mirrors)) }
             }
         }.awaitAll()
 
@@ -49,6 +49,10 @@ class Repository(private val context: Context) {
                 return@forEachIndexed
             }
             for (e in entries) {
+                val required = src.requireGroup
+                if (required != null &&
+                    !e.attrs["group-title"].orEmpty().contains(required, ignoreCase = true)
+                ) continue
                 if (!seen.add(e.url)) continue
                 channels.add(
                     Channel(
@@ -93,6 +97,21 @@ class Repository(private val context: Context) {
         conn.setRequestProperty("User-Agent", ua ?: DEFAULT_USER_AGENT)
         ref?.let { conn.setRequestProperty("Referer", it) }
         return conn
+    }
+
+    /** Returns the first URL that downloads successfully; throws the last error otherwise. */
+    private fun downloadAny(urls: List<String>): String {
+        var last: Exception? = null
+        for (u in urls) {
+            try {
+                val text = download(u)
+                if (text.contains("#EXTINF")) return text
+                last = IllegalStateException("القائمة فارغة")
+            } catch (e: Exception) {
+                last = e
+            }
+        }
+        throw last ?: IllegalStateException("لا يوجد رابط")
     }
 
     private fun download(url: String): String {

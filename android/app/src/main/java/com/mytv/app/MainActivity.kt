@@ -6,6 +6,7 @@ import android.text.InputType
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -129,13 +130,12 @@ class MainActivity : AppCompatActivity() {
     // ------------------------------------------------------------------ data
 
     private fun activeSources(): List<Source> =
-        prefs.sources + if (prefs.adultEnabled) listOf(Source.ADULT) else emptyList()
+        prefs.sources.filter { !it.adult || prefs.adultEnabled } +
+            if (prefs.adultEnabled) listOf(Source.ADULT) else emptyList()
 
-    private fun refresh() {
-        if (busy?.isActive == true) {
-            swipe.isRefreshing = false
-            return
-        }
+    /** Restarts if something is already running, so a new request (e.g. enabling +18) is never dropped. */
+    private fun refresh(onDone: (() -> Unit)? = null) {
+        busy?.cancel()
         busy = lifecycleScope.launch {
             setBusy(true, "جارٍ تحميل القوائم…")
             val result = repo.refresh(activeSources())
@@ -155,11 +155,37 @@ class MainActivity : AppCompatActivity() {
                     .show()
             }
             render()
+            onDone?.invoke()
+        }
+    }
+
+    /** Called after the adult section is enabled or unlocked: jump to it, or explain why it's empty. */
+    private fun showAdultResult() {
+        val count = all.count { it.adult }
+        if (count > 0) {
+            selected = Groups.ADULT
+            render()
+            toast("قسم الكبار: $count قناة")
+        } else {
+            AlertDialog.Builder(this)
+                .setTitle(R.string.adult)
+                .setMessage(
+                    "تم تفعيل القسم، لكن لم يتم العثور على قنوات للكبار.\n\n" +
+                        "قد يكون المصدر الافتراضي غير متاح حالياً أو محجوباً في بلدك. " +
+                        "يمكنك إضافة رابط قائمة M3U للكبار بنفسك، وسيبقى محمياً بالرقم السري."
+                )
+                .setPositiveButton("إضافة مصدر للكبار") { _, _ -> addSource(adult = true) }
+                .setNeutralButton("إعادة المحاولة") { _, _ -> refresh(::showAdultResult) }
+                .setNegativeButton("إغلاق", null)
+                .show()
         }
     }
 
     private fun checkChannels() {
-        if (busy?.isActive == true) return
+        if (busy?.isActive == true) {
+            toast("انتظر حتى ينتهي التحميل الحالي")
+            return
+        }
         val targets = all.filter { !it.adult || Prefs.adultUnlocked }
         if (targets.isEmpty()) return
         busy = lifecycleScope.launch {
@@ -256,14 +282,15 @@ class MainActivity : AppCompatActivity() {
     // ------------------------------------------------------------------ sources
 
     private fun showSources() {
-        val sources = prefs.sources
-        val labels = sources.map { "${it.name}\n${it.url}" }.toTypedArray()
+        val sources = prefs.sources.filter { !it.adult || Prefs.adultUnlocked }
+        val labels = sources.map { (if (it.adult) "🔞 " else "") + "${it.name}\n${it.url}" }.toTypedArray()
         AlertDialog.Builder(this)
             .setTitle("المصادر (اضغط على مصدر لحذفه)")
             .setItems(labels) { _, which -> confirmRemoveSource(sources[which]) }
             .setPositiveButton("إضافة مصدر") { _, _ -> addSource() }
             .setNeutralButton("استعادة الافتراضي") { _, _ ->
-                prefs.sources = Source.DEFAULTS
+                // Keep the user's own +18 sources; they are managed behind the PIN.
+                prefs.sources = Source.DEFAULTS + prefs.sources.filter { it.adult }
                 refresh()
             }
             .setNegativeButton("إغلاق", null)
@@ -281,18 +308,24 @@ class MainActivity : AppCompatActivity() {
             .show()
     }
 
-    private fun addSource() {
+    private fun addSource(adult: Boolean = false) {
         val pad = (16 * resources.displayMetrics.density).toInt()
         val name = EditText(this).apply { hint = "الاسم" }
         val url = EditText(this).apply {
             hint = "رابط M3U (https://…)"
             inputType = InputType.TYPE_TEXT_VARIATION_URI
         }
+        val adultBox = CheckBox(this).apply {
+            text = "قائمة للكبار +18 (محمية بالرقم السري)"
+            isChecked = adult
+        }
         val box = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(pad, pad / 2, pad, 0)
             addView(name)
             addView(url)
+            // Only offered once a PIN exists and the section is unlocked.
+            if (Prefs.adultUnlocked) addView(adultBox)
         }
         AlertDialog.Builder(this)
             .setTitle("إضافة مصدر")
@@ -304,8 +337,9 @@ class MainActivity : AppCompatActivity() {
                     return@setPositiveButton
                 }
                 val n = name.text.toString().trim().ifEmpty { u.substringAfterLast('/') }
-                prefs.sources = prefs.sources + Source(n, u)
-                refresh()
+                val isAdult = Prefs.adultUnlocked && adultBox.isChecked
+                prefs.sources = prefs.sources + Source(n, u, adult = isAdult)
+                refresh(if (isAdult) ::showAdultResult else null)
             }
             .setNegativeButton("إلغاء", null)
             .show()
@@ -319,17 +353,18 @@ class MainActivity : AppCompatActivity() {
                 prefs.setPin(pin)
                 prefs.adultEnabled = true
                 Prefs.adultUnlocked = true
-                toast("تم تفعيل قسم الكبار")
-                refresh()
+                toast("تم تفعيل قسم الكبار، جارٍ تحميل القنوات…")
+                refresh(::showAdultResult)
             }
             !Prefs.adultUnlocked -> askPin("أدخل الرقم السري") { pin ->
                 if (prefs.checkPin(pin)) {
                     Prefs.adultUnlocked = true
-                    if (!prefs.adultEnabled) {
+                    if (!prefs.adultEnabled || all.none { it.adult }) {
                         prefs.adultEnabled = true
-                        refresh()
+                        toast("جارٍ تحميل قنوات الكبار…")
+                        refresh(::showAdultResult)
                     } else {
-                        render()
+                        showAdultResult()
                     }
                 } else {
                     toast("رقم سري خاطئ")

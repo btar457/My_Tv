@@ -8,6 +8,10 @@ data class Source(
     val url: String,
     val adult: Boolean = false,
     val defaultGroup: String? = null,
+    /** Tried in order when [url] fails (built-in sources only, not saved). */
+    val mirrors: List<String> = emptyList(),
+    /** Keep only entries whose group-title contains this (built-in sources only). */
+    val requireGroup: String? = null,
 ) {
     fun toJson(): JSONObject = JSONObject().apply {
         put("name", name)
@@ -48,6 +52,11 @@ data class Source(
             name = "قنوات الكبار (iptv-org)",
             url = "https://iptv-org.github.io/iptv/categories/xxx.m3u",
             adult = true,
+            mirrors = listOf(
+                "https://iptv-org.github.io/iptv/index.nsfw.m3u",
+                "https://raw.githubusercontent.com/iptv-org/iptv/gh-pages/categories/xxx.m3u",
+            ),
+            requireGroup = "XXX",
         )
     }
 }
