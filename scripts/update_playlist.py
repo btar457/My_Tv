@@ -24,6 +24,7 @@ from __future__ import annotations
 import argparse
 import concurrent.futures
 import datetime as dt
+import http.client
 import json
 import re
 import sys
@@ -240,15 +241,19 @@ def stream_headers(ch: dict) -> dict[str, str]:
 
 
 def check_stream(url: str, headers: dict[str, str] | None = None) -> bool:
-    req = urllib.request.Request(url, headers=headers or {"User-Agent": USER_AGENT})
     try:
+        req = urllib.request.Request(url, headers=headers or {"User-Agent": USER_AGENT})
         with urllib.request.urlopen(req, timeout=TIMEOUT) as resp:
             if resp.status >= 400:
                 return False
-            head = resp.read(2048)
-    except (urllib.error.URLError, OSError, ValueError):
+            content_type = resp.headers.get("Content-Type", "").lower()
+            try:
+                head = resp.read(2048)
+            except http.client.IncompleteRead as exc:
+                # Live servers often close chunked responses early; what arrived is enough.
+                head = exc.partial
+    except Exception:  # noqa: BLE001 - one broken server must never stop the whole run
         return False
-    content_type = resp.headers.get("Content-Type", "").lower()
     if head.lstrip(b"\xef\xbb\xbf \r\n\t").startswith(b"#EXTM3U"):
         return True
     # Some servers return raw MPEG-TS / DASH instead of an HLS playlist.
