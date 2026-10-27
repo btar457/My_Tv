@@ -29,6 +29,7 @@ import json
 import re
 import sys
 import urllib.error
+import urllib.parse
 import urllib.request
 from pathlib import Path
 
@@ -50,6 +51,20 @@ HIDE_AFTER_TAGGED = 14
 # After this many consecutive failures the channel is removed from channels.json.
 # It stays recoverable from git history.
 REMOVE_AFTER = 30
+
+# Content that gets public repositories suspended: adult content under GitHub's
+# Acceptable Use Policies (the reason iptv-org dropped its adult channels in 2024)
+# and pirated paid channels (DMCA). Anything that matches is removed on every run,
+# even if another tool adds it back.
+BLOCKED_HOSTS = (
+    "adultiptv.net", "mycamtv.com", "visit-x.tv", "visit-x.net",
+    # Unlicensed rebroadcasts of paid channels (DMCA takedown risk).
+    "tvpass.org",
+)
+BLOCKED_NAME_RE = re.compile(
+    r"\bxxx\b|\bporn|\badult\b(?!\s*swim)|\bmilf\b|\bhentai\b|\berotic|\bnsfw\b|\+\s*18\b|\b18\s*\+",
+    re.IGNORECASE,
+)
 
 IPTV_ORG_CHANNELS = "https://iptv-org.github.io/api/channels.json"
 IPTV_ORG_LOGOS = "https://iptv-org.github.io/api/logos.json"
@@ -132,6 +147,14 @@ def load_channels() -> tuple[list[dict], set[str]]:
     return channels, removed
 
 
+def is_blocked(ch: dict) -> bool:
+    host = urllib.parse.urlsplit(ch.get("url", "")).hostname or ""
+    if any(host == h or host.endswith("." + h) for h in BLOCKED_HOSTS):
+        return True
+    text = " ".join(str(ch.get(k, "")) for k in ("name", "group"))
+    return bool(BLOCKED_NAME_RE.search(text))
+
+
 def dedupe(channels: list[dict]) -> tuple[list[dict], int]:
     seen: dict[str, dict] = {}
     for ch in channels:
@@ -211,6 +234,8 @@ def import_sources(channels: list[dict], removed: set[str]) -> int:
             if group == SPORTS_MARKER:
                 group = classify(e["name"])
             ch = {"name": e["name"], "url": url, "group": group, "source": src["id"]}
+            if is_blocked({**ch, "group": e["attrs"].get("group-title", "")}):
+                continue
             if src.get("playlist", "main") != "main":
                 ch["playlist"] = src["playlist"]
             if e["attrs"].get("tvg-id"):
@@ -401,6 +426,10 @@ def main(argv: list[str] | None = None) -> int:
 
     channels, removed = load_channels()
     print(f"loaded: {len(channels)} channels")
+
+    before = len(channels)
+    channels = [c for c in channels if not is_blocked(c)]
+    print(f"blocked content removed: {before - len(channels)}")
 
     channels, dupes = dedupe(channels)
     print(f"duplicates removed: {dupes}")

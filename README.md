@@ -48,6 +48,14 @@ https://raw.githubusercontent.com/btar457/My_Tv/main/playlist.m3u
 
 لإضافة مصدر أو تصنيف جديد (مثلاً أخبار أو أطفال) أضفه في `sources.json`؛ أسماء التصنيفات هي تصنيفات iptv-org مثل `News` و`Kids` و`Religious`.
 
+## المحتوى المحظور
+
+حتى لا يُحظر المستودع، يحذف السكربت في كل تشغيل أي قناة:
+- للكبار (أسماء مثل XXX أو Adult أو +18، أو مواقع مثل adultiptv.net وmycamtv.com) — سياسة GitHub تمنعها، وبسببها حذف iptv-org قنوات الكبار سنة 2024.
+- من مواقع تعيد بث قنوات مدفوعة بدون ترخيص (مثل tvpass.org) — تسبب طلبات حذف DMCA.
+
+القائمة في `BLOCKED_HOSTS` و`BLOCKED_NAME_RE` داخل `scripts/update_playlist.py`. حتى لو أضافتها أداة أخرى، تُحذف في التحديث التالي.
+
 ## إضافة قناة
 
 أضف عنصراً إلى `channels_list` في `channels.json`:

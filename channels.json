@@ -1,6 +1,6 @@
 {
-  "last_update": "2026-09-26",
-  "total": 2073,
+  "last_update": "2026-10-27",
+  "total": 2059,
   "channels_list": [
     {
       "name": "Al Masar TV (576p)",
@@ -1051,14 +1051,6 @@
       "last_ok": "2026-09-26"
     },
     {
-      "name": "Golf Channel (1080p) [Not 24/7]",
-      "url": "https://tvpass.org/live/GolfChannel/hd",
-      "group": "غولف وتنس",
-      "tvg_id": "GolfChannel.cz",
-      "logo": "https://www.sms.cz/kategorie/televize/bmp/loga/velka/golfchannel.png",
-      "fail_count": 1
-    },
-    {
       "name": "Golf Channel Latin America",
       "url": "http://181.114.57.246:4000/play/BHGDIhvdyuw/index.m3u8",
       "group": "غولف وتنس",
@@ -1286,14 +1278,6 @@
       "last_ok": "2026-09-26"
     },
     {
-      "name": "Fox Sports 2 (720p) [Not 24/7]",
-      "url": "https://tvpass.org/live/FoxSports2/hd",
-      "group": "رياضات أمريكية",
-      "tvg_id": "FoxSports2.ar",
-      "logo": "https://i.imgur.com/oG7HzEf.png",
-      "fail_count": 1
-    },
-    {
       "name": "Fox Sports en Espanol (720p)",
       "url": "https://live-manifest.production-public.tubi.io/live/d906efca-1302-4e29-b0d9-9a1d7a305d69/playlist.m3u8",
       "group": "رياضات أمريكية",
@@ -1356,14 +1340,6 @@
       "last_ok": "2026-09-26"
     },
     {
-      "name": "MSG (1080p) [Not 24/7]",
-      "url": "https://tvpass.org/live/msg-madison-square-gardens/hd",
-      "group": "رياضات أمريكية",
-      "tvg_id": "MSG.us",
-      "logo": "https://i.imgur.com/SEQFh0P.png",
-      "fail_count": 1
-    },
-    {
       "name": "MSG (720p)",
       "url": "http://23.237.104.106:8080/USA_MSG/index.m3u8",
       "group": "رياضات أمريكية",
@@ -1372,14 +1348,6 @@
       "logo": "https://i.imgur.com/SEQFh0P.png",
       "fail_count": 0,
       "last_ok": "2026-09-26"
-    },
-    {
-      "name": "MSG Plus (720p) [Not 24/7]",
-      "url": "https://tvpass.org/live/msg-plus/hd",
-      "group": "رياضات أمريكية",
-      "tvg_id": "MSGPlus.us",
-      "logo": "https://i.imgur.com/7suDpSK.png",
-      "fail_count": 1
     },
     {
       "name": "NBA TV (1080p)",
@@ -1408,22 +1376,6 @@
       "fail_count": 1
     },
     {
-      "name": "NBC Sports Bay Area (720p) [Not 24/7]",
-      "url": "https://tvpass.org/live/nbc-sports-bay-area/hd",
-      "group": "رياضات أمريكية",
-      "tvg_id": "NBCSportsBayArea.us",
-      "logo": "https://i.imgur.com/MTgUVKx.png",
-      "fail_count": 1
-    },
-    {
-      "name": "NBC Sports Boston (1080p) [Not 24/7]",
-      "url": "https://tvpass.org/live/nbc-sports-boston/hd",
-      "group": "رياضات أمريكية",
-      "tvg_id": "NBCSportsBoston.us",
-      "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/NBC_Sports_Boston.png/960px-NBC_Sports_Boston.png",
-      "fail_count": 1
-    },
-    {
       "name": "NBC Sports NOW (1080p)",
       "url": "https://d4whmvwm0rdvi.cloudfront.net/10007/99993008/hls/master.m3u8?ads.xumo_channelId=99993008",
       "group": "رياضات أمريكية",
@@ -1431,14 +1383,6 @@
       "logo": "https://i.imgur.com/EzNf2Yx.png",
       "fail_count": 0,
       "last_ok": "2026-09-26"
-    },
-    {
-      "name": "NBC Sports Philadelphia (720p) [Not 24/7]",
-      "url": "https://tvpass.org/live/nbc-sports-philadelphia/hd",
-      "group": "رياضات أمريكية",
-      "tvg_id": "NBCSportsPhiladelphia.us",
-      "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/NBC_Sports_Philadelphia.png/960px-NBC_Sports_Philadelphia.png",
-      "fail_count": 1
     },
     {
       "name": "NFL Channel (1080p) [Geo-blocked]",
@@ -1466,14 +1410,6 @@
       "source": "iptv-org/sports",
       "tvg_id": "NFLNetwork.us@SD",
       "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/8/8f/NFL_Network_logo.svg/960px-NFL_Network_logo.svg.png",
-      "fail_count": 1
-    },
-    {
-      "name": "NFL RedZone (720p) [Not 24/7]",
-      "url": "https://tvpass.org/live/NFLRedZone/hd",
-      "group": "رياضات أمريكية",
-      "tvg_id": "NFLRedZone.us",
-      "logo": "https://i.imgur.com/5lPqQj5.png",
       "fail_count": 1
     },
     {
@@ -1521,58 +1457,12 @@
       "last_ok": "2026-09-26"
     },
     {
-      "name": "TSN1 (1080p) [Not 24/7]",
-      "url": "https://tvpass.org/live/tsn1/hd",
-      "group": "رياضات أمريكية",
-      "tvg_id": "TSN1.ca",
-      "logo": "https://i.imgur.com/eRFE0jZ.png",
-      "fail_count": 1
-    },
-    {
-      "name": "TSN2 (1080p) [Not 24/7]",
-      "url": "https://tvpass.org/live/tsn2/hd",
-      "group": "رياضات أمريكية",
-      "tvg_id": "TSN2.ca",
-      "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/TSN2.svg/960px-TSN2.svg.png",
-      "fail_count": 1
-    },
-    {
-      "name": "TSN3 (1080p) [Not 24/7]",
-      "url": "https://tvpass.org/live/tsn3/hd",
-      "group": "رياضات أمريكية",
-      "tvg_id": "TSN3.ca",
-      "logo": "https://i.imgur.com/AYza8KO.png",
-      "fail_count": 1
-    },
-    {
-      "name": "TSN4 (720p) [Not 24/7]",
-      "url": "https://tvpass.org/live/tsn4/hd",
-      "group": "رياضات أمريكية",
-      "tvg_id": "TSN4.ca",
-      "logo": "https://i.imgur.com/qJyAWU8.png",
-      "fail_count": 1
-    },
-    {
-      "name": "TSN5 (1080p) [Not 24/7]",
-      "url": "https://tvpass.org/live/tsn5/hd",
-      "group": "رياضات أمريكية",
-      "tvg_id": "TSN5.ca",
-      "logo": "https://i.imgur.com/HEzHpzz.png",
-      "fail_count": 1
-    },
-    {
       "name": "USA Network (1080p)",
       "url": "http://190.11.225.124:5000/live/usa_hd/playlist.m3u8",
       "group": "رياضات أمريكية",
       "source": "iptv-org/sports",
       "tvg_id": "USANetwork.us@East",
       "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/USA_Network_logo_%282016%29.svg/960px-USA_Network_logo_%282016%29.svg.png",
-      "fail_count": 1
-    },
-    {
-      "name": "USA Network East (1080p) [Not 24/7]",
-      "url": "https://tvpass.org/live/USANetworkEast/hd",
-      "group": "رياضات أمريكية",
       "fail_count": 1
     },
     {
